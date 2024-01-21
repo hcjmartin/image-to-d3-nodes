@@ -25,6 +25,7 @@ export default function Home() {
     "/// Why? I wanted to do something different for my Canva application..."
   );
   console.log("/// Is it super fancy? No. Did I have fun making it? Yes!");
+  console.log("/// Repo: https://github.com/hcjmartin/image-to-d3-nodes/");
   console.log("/// Message me here https://www.linkedin.com/in/hcjmartin/");
 
   return (
