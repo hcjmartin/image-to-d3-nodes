@@ -13,6 +13,18 @@ export const getPixelsFromPath = (imagePath: string) => {
     })
 }
 
+export const getPixelsFromFile = (file: string) => {
+    return new Promise<NdArray<Uint8Array>>((resolve, reject) => {
+        getPixels(file, function(err, pixels) {
+            if(err) {
+              console.log("Bad image path")
+              reject(Error("Could not load image data"));
+            }
+            resolve(pixels);
+          })
+    })
+}
+
 export interface IRGBData {
     r: number;
     g: number;

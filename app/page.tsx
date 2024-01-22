@@ -1,12 +1,18 @@
 "use client";
 import Graph from "./components/graph";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [nightmode, setNightmode] = useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(true);
+  const [userDataUrl, setUserDataUrl] = useState<string>();
 
   var windowSize = useRef([100, 100]);
   var isMobile = false;
+
+  var initialImageUrl = "/images/canvalogosm2.png";
+
+  const inputFileRef = useRef<any>();
 
   if (typeof window !== "undefined") {
     windowSize.current = [window.innerWidth, window.innerHeight];
@@ -16,6 +22,10 @@ export default function Home() {
       userAgent
     );
   }
+
+  const onInputClick = () => {
+    inputFileRef.current.click();
+  };
 
   console.clear();
   console.log(
@@ -27,6 +37,10 @@ export default function Home() {
   console.log("/// Is it super fancy? No. Did I have fun making it? Yes!");
   console.log("/// Repo: https://github.com/hcjmartin/image-to-d3-nodes/");
   console.log("/// Message me here https://www.linkedin.com/in/hcjmartin/");
+
+  useEffect(() => {
+    setTimeout(() => setTooltipVisible(false), 4000);
+  }, []);
 
   return (
     <main
@@ -46,9 +60,10 @@ export default function Home() {
         <Graph
           width={windowSize.current[0]}
           height={windowSize.current[1]}
-          imageToConvertPath="/images/canvalogosm2.png"
+          imageToConvertPath={initialImageUrl}
           splashImagePath="/images/harry256li.png"
           splashClickLink="https://www.linkedin.com/in/hcjmartin/"
+          fileDataUrl={userDataUrl}
           isMobile={isMobile}
         ></Graph>
       </div>
@@ -75,13 +90,67 @@ export default function Home() {
           top: 0,
           right: 0,
           marginLeft: 6,
-          width: 24,
-          height: 24,
-          borderRadius: 10,
-          backgroundColor: nightmode ? "white" : "black",
+          display: "flex",
+          flexDirection: "row",
+          textAlign: "center",
         }}
-        onClick={() => setNightmode(!nightmode)}
-      />
+      >
+        <p
+          style={{ color: nightmode ? "white" : "black", margin: "auto" }}
+          className={!tooltipVisible ? "fade-out" : ""}
+        >
+          Choose your own image{" -> "}
+        </p>
+        <div
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 10,
+            margin: 6,
+            borderWidth: 2,
+            borderColor: nightmode ? "white" : "black",
+          }}
+        >
+          <img
+            src={userDataUrl ?? initialImageUrl}
+            alt="logo"
+            style={{ width: "100%" }}
+            onClick={onInputClick}
+          />{" "}
+          <input
+            type="file"
+            name="myImage"
+            ref={inputFileRef}
+            onChange={(event) => {
+              let targetFile = event.target.files;
+              if (targetFile !== null) {
+                var uploadedFile = targetFile[0];
+                var reader = new FileReader();
+
+                reader.readAsDataURL(uploadedFile);
+                reader.onloadend = (dataUrl) => {
+                  console.log("image loaded");
+                  let result = reader.result;
+                  if (result !== null) {
+                    setUserDataUrl(result.toString());
+                  }
+                };
+              }
+            }}
+            style={{ visibility: "hidden" }}
+          />
+        </div>
+        <div
+          style={{
+            width: 24,
+            height: 24,
+            margin: 6,
+            borderRadius: 10,
+            backgroundColor: nightmode ? "white" : "black",
+          }}
+          onClick={() => setNightmode(!nightmode)}
+        />
+      </div>
     </main>
   );
 }

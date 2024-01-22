@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import {
   IPixelColourData,
+  getPixelsFromFile,
   getPixelsFromPath,
   pixelDataToColors,
 } from "../services/pixelHelpers";
@@ -15,6 +16,7 @@ interface MyD3ComponentProps {
   imageToConvertPath: string;
   splashImagePath: string;
   splashClickLink: string;
+  fileDataUrl?: string;
 }
 
 interface CustomNode extends d3.SimulationNodeDatum {
@@ -44,10 +46,16 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
   };
 
   useEffect(() => {
-    getPixelsFromPath(props.imageToConvertPath).then((pixelArray) => {
-      setPixelColourData(pixelDataToColors(pixelArray));
-    });
-  }, [props.imageToConvertPath]);
+    if (props.fileDataUrl) {
+        getPixelsFromFile(props.fileDataUrl).then((pixelArray) => {
+            setPixelColourData(pixelDataToColors(pixelArray));
+          });
+    } else {
+      getPixelsFromPath(props.imageToConvertPath).then((pixelArray) => {
+        setPixelColourData(pixelDataToColors(pixelArray));
+      });
+    }
+  }, [props.imageToConvertPath, props.fileDataUrl]);
 
   useEffect(() => {
     if (pixelColourData) {
@@ -262,7 +270,7 @@ function GetNodesFromPixelData(
 
   // Remove unnecessary transparent nodes
   let filteredNodeArray = nodeArrayFromPixelData.filter(
-    (element) => element.alphaValue > 250
+    (element) => element.alphaValue > 128
   );
 
   // Add a node for the splashImage
