@@ -210,7 +210,7 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
       />
     ) : (
       <p style={{ textAlign: "center" }}>
-        Image should be a maximum of 256 * 256 pixels
+        Image should be a maximum of 128 * 128 pixels
       </p>
     )
   ) : (
@@ -224,7 +224,7 @@ function GetNodesFromPixelData(
   containerHeight: number,
   isMobile: boolean
 ): CustomNode[] {
-  if (pixels.colourData.length > 256 * 256) {
+  if (pixels.colourData.length > 128 * 128) {
     // todo: ideally should just scale the image
     console.error("That image is too large.");
     return [];
