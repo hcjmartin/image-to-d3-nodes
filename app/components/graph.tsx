@@ -47,9 +47,9 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
 
   useEffect(() => {
     if (props.fileDataUrl) {
-        getPixelsFromFile(props.fileDataUrl).then((pixelArray) => {
-            setPixelColourData(pixelDataToColors(pixelArray));
-          });
+      getPixelsFromFile(props.fileDataUrl).then((pixelArray) => {
+        setPixelColourData(pixelDataToColors(pixelArray));
+      });
     } else {
       getPixelsFromPath(props.imageToConvertPath).then((pixelArray) => {
         setPixelColourData(pixelDataToColors(pixelArray));
@@ -111,8 +111,10 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
       };
 
       const pointerExit = (event: PointerEvent) => {
-        initatedNodes[0].fx = null;
-        initatedNodes[0].fy = null;
+        if (initatedNodes[0]) {
+          initatedNodes[0].fx = null;
+          initatedNodes[0].fy = null;
+        }
       };
 
       const ticked = () => {
@@ -198,13 +200,19 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
   }, [nodeData, width, height, pixelColourData]);
 
   return nodeData ? (
-    <canvas
-      className="d3-component"
-      width={width}
-      height={height}
-      ref={canvasRef}
-      style={{ cursor: "crosshair" }}
-    />
+    nodeData.length > 0 ? (
+      <canvas
+        className="d3-component"
+        width={width}
+        height={height}
+        ref={canvasRef}
+        style={{ cursor: "crosshair" }}
+      />
+    ) : (
+      <p style={{ textAlign: "center" }}>
+        Image should be a maximum of 256 * 256 pixels
+      </p>
+    )
   ) : (
     <p>Node data is loading...</p>
   );
@@ -216,6 +224,11 @@ function GetNodesFromPixelData(
   containerHeight: number,
   isMobile: boolean
 ): CustomNode[] {
+  if (pixels.colourData.length > 256 * 256) {
+    // todo: ideally should just scale the image
+    console.error("That image is too large.");
+    return [];
+  }
   let containerScale = containerWidth / containerHeight;
   // Adjust border based on canvas scale + if device is mobile
   let border = isMobile

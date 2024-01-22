@@ -121,6 +121,7 @@ export default function Home() {
             type="file"
             name="myImage"
             ref={inputFileRef}
+            accept='image/png, image/jpeg'
             onChange={(event) => {
               let targetFile = event.target.files;
               if (targetFile !== null) {
