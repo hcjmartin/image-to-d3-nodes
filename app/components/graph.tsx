@@ -126,7 +126,7 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
           context.save();
           const splashNode = initatedNodes[0];
           context.beginPath();
-          context.moveTo(splashNode.x + splashNode.r, splashNode.y);
+          context.moveTo(splashNode.x + splashNode.r/2, splashNode.y);
           context.arc(splashNode.x, splashNode.y, splashNode.r, 0, 2 * Math.PI);
           context.closePath();
           context.clip();
@@ -143,7 +143,7 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
           for (let i = 1; i < initatedNodes.length; ++i) {
             const d = initatedNodes[i];
             context.beginPath();
-            context.moveTo(d.x + d.r, d.y);
+            context.moveTo(d.x + d.r/2, d.y);
             context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
             context.fillStyle = i == 0 ? "#ff0000" : initatedNodes[i].color;
             context.fill();
@@ -277,7 +277,7 @@ function GetNodesFromPixelData(
       x: (i % pixels.width) * imgScale - xPosOffset,
       y: -containerHeight / 2,
       homeX: (i % pixels.width) * imgScale - xPosOffset,
-      homeY: i / (pixels.width / imgScale) - yPosOffset,
+      homeY: Math.floor(i / (pixels.width)) * imgScale - yPosOffset,
     })
   );
 

@@ -8,8 +8,6 @@ export default function Home() {
   const [userDataUrl, setUserDataUrl] = useState<string>();
   const [screenLoaded, setScreenLoaded] = useState(false);
 
-  console.clear();
-
   var windowSize = useRef([100, 100]);
   var isMobile = false;
 
