@@ -11,7 +11,7 @@ export default function Home() {
   var windowSize = useRef([100, 100]);
   var isMobile = false;
 
-  var initialImageUrl = "/images/canvalogosm2.png";
+  var initialImageUrl = "/images/code2.png";
 
   const inputFileRef = useRef<any>();
   const onInputClick = () => {
@@ -93,10 +93,6 @@ export default function Home() {
               textAlign: "right",
             }}
           >
-            <p style={{ color: nightmode ? "white" : "black" }}>
-              Move your mouse over the graphic, help me make a splash at Canva
-              😄{" "}
-            </p>
           </div>
           <div
             style={{
