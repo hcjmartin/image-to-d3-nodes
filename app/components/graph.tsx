@@ -126,7 +126,7 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
           context.save();
           const splashNode = initatedNodes[0];
           context.beginPath();
-          context.moveTo(splashNode.x + splashNode.r/2, splashNode.y);
+          context.moveTo(splashNode.x + splashNode.r / 2, splashNode.y);
           context.arc(splashNode.x, splashNode.y, splashNode.r, 0, 2 * Math.PI);
           context.closePath();
           context.clip();
@@ -143,7 +143,7 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
           for (let i = 1; i < initatedNodes.length; ++i) {
             const d = initatedNodes[i];
             context.beginPath();
-            context.moveTo(d.x + d.r/2, d.y);
+            context.moveTo(d.x + d.r / 2, d.y);
             context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
             context.fillStyle = i == 0 ? "#ff0000" : initatedNodes[i].color;
             context.fill();
@@ -200,7 +200,11 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
   }, [nodeData, width, height, pixelColourData]);
 
   return nodeData ? (
-    nodeData.length > 0 ? (
+    nodeData.length === 1 ? (
+        <p style={{ textAlign: "center" }}>
+          Image should be a maximum of 128 * 128 pixels
+        </p>
+      ) : (
       <canvas
         className="d3-component"
         width={width}
@@ -208,10 +212,6 @@ function D3NodeGraphic(props: MyD3ComponentProps) {
         ref={canvasRef}
         style={{ cursor: "crosshair" }}
       />
-    ) : (
-      <p style={{ textAlign: "center" }}>
-        Image should be a maximum of 128 * 128 pixels
-      </p>
     )
   ) : (
     <p>Node data is loading...</p>
@@ -224,11 +224,6 @@ function GetNodesFromPixelData(
   containerHeight: number,
   isMobile: boolean
 ): CustomNode[] {
-  if (pixels.colourData.length > 128 * 128) {
-    // todo: ideally should just scale the image
-    console.error("That image is too large.");
-    return [];
-  }
   let containerScale = containerWidth / containerHeight;
   // Adjust border based on canvas scale + if device is mobile
   let border = isMobile
@@ -246,6 +241,22 @@ function GetNodesFromPixelData(
   let imgScale = 1;
   let xPosOffset = 0;
   let yPosOffset = 0;
+
+  const mouseNode = {
+    r: isMobile ? containerWidth / 8 : containerWidth / 32,
+    color: "black",
+    x: -xPosOffset,
+    y: -containerHeight / 2,
+    homeX: -containerWidth / 2 + radius() * (isMobile ? 20 : 10),
+    homeY: -containerHeight / 2 + radius() * (isMobile ? 20 : 10),
+    alphaValue: 255,
+  };
+
+  if (pixels.colourData.length > 128 * 128) {
+    // todo: ideally should just scale the image
+    console.error("That image is too large.");
+    return [mouseNode];
+  }
 
   // Update offsets and scaling depending on container shape
   if (containerScale < 1) {
@@ -277,7 +288,7 @@ function GetNodesFromPixelData(
       x: (i % pixels.width) * imgScale - xPosOffset,
       y: -containerHeight / 2,
       homeX: (i % pixels.width) * imgScale - xPosOffset,
-      homeY: Math.floor(i / (pixels.width)) * imgScale - yPosOffset,
+      homeY: Math.floor(i / pixels.width) * imgScale - yPosOffset,
     })
   );
 
@@ -287,15 +298,7 @@ function GetNodesFromPixelData(
   );
 
   // Add a node for the splashImage
-  filteredNodeArray.push({
-    r: isMobile ? containerWidth / 8 : containerWidth / 32,
-    color: "black",
-    x: -xPosOffset,
-    y: -containerHeight / 2,
-    homeX: -containerWidth / 2 + radius() * (isMobile ? 20 : 10),
-    homeY: -containerHeight / 2 + radius() * (isMobile ? 20 : 10),
-    alphaValue: 255,
-  });
+  filteredNodeArray.push(mouseNode);
 
   return filteredNodeArray;
 }

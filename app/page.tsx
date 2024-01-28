@@ -11,7 +11,7 @@ export default function Home() {
   var windowSize = useRef([100, 100]);
   var isMobile = false;
 
-  var initialImageUrl = "/images/code2.png";
+  var initialImageUrl = "/images/smileEmoji.png";
 
   const inputFileRef = useRef<any>();
   const onInputClick = () => {
@@ -20,9 +20,6 @@ export default function Home() {
 
   console.log(
     "/// Hey! Harry here. This silly little experiment converts a local png to a d3 graph of nodes."
-  );
-  console.log(
-    "/// Why? I wanted to do something different for my Canva application..."
   );
   console.log("/// Is it super fancy? No. Did I have fun making it? Yes!");
   console.log("/// Repo: https://github.com/hcjmartin/image-to-d3-nodes/");
